@@ -8,12 +8,6 @@ require('./config/database');
 
 app.use(serveStatic(__dirname));
 
-app.get('*', function (req, res) {
-    const index = path.join(__dirname, 'index.html');
-    console.log(index);
-    res.sendFile(index)
-});
-
 require('dotenv').config();
 
 /* Uma maneira simples de implementar autorização é criar

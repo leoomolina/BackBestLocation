@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 // configuração da palavra secreta utilizada para verificar token
 jwtConfig = {
     'secret': process.env.SECRET

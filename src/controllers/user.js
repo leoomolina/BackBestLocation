@@ -1,6 +1,7 @@
 // importando módulos necessários
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 // atribuição do model registrado à variável modelUser
 const modelUser = mongoose.model('User');
@@ -157,6 +158,21 @@ userController.updateUser = (req, res) => {
 // LOGIN
 userController.loginUser = (req, res) => {
     let { emailLogar, passwordLogar } = req.body;
+    if (!emailLogar){
+        res.status(400).json({
+            success: false,
+            message: 'Usuário é obrigatório.',
+            statusCode: 400
+        });
+        return;
+    } else if (!passwordLogar) {
+        res.status(400).json({
+            success: false,
+            message: 'Senha é obrigatório.',
+            statusCode: 400
+        });
+        return;
+    }
     modelUser.findOne({ email: emailLogar }, 'email password', (err, userData) => {
         if (!err) {
             let passwordCheck = bcrypt.compareSync(passwordLogar, userData.password);
@@ -169,16 +185,19 @@ userController.loginUser = (req, res) => {
                 req.session.user.expires = new Date(
                     Date.now() + 3 * 24 * 3600 * 1000 // seção expira em 3 dias
                 );
-                res.status(200).send('Você está logado, bem vindo!');
+                let token = jwt.sign({ username: emailLogar }, 'secretKey')
+                res.status(200).json(token);
             } else {
-                res.status(401).json({
+                res.status(400).json({
                     success: false,
                     message: 'Senha incorreta',
-                    statusCode: 401
+                    statusCode: 400
                 });
+                return;
             }
         } else {
-            res.status(401).send('Credenciais de login inválidas!')
+            res.status(401).send('Credenciais de login inválidas.')
+            return;
         }
     });
 }
