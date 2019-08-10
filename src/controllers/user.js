@@ -173,19 +173,19 @@ userController.loginUser = (req, res) => {
         });
         return;
     }
-    modelUser.findOne({ email: emailLogar }, 'email password', (err, userData) => {
+    modelUser.findOne({ email: emailLogar }, 'email password isAdmin', (err, userData) => {
         if (!err) {
             let passwordCheck = bcrypt.compareSync(passwordLogar, userData.password);
             if (passwordCheck) { // usando o bcrypt para verificar o hash da senha do banco de dados em relação à senha fornecida pelo usuário
                 req.session.user = {
                     emailLogar: userData.email,
-                    cpf: userData.cpf,
-                    id: userData._id
+                    isAdmin : userData.isAdmin,
+                    id: userData.id
                 }; // salvando os dados de alguns usuários na sessão do usuário
                 req.session.user.expires = new Date(
                     Date.now() + 3 * 24 * 3600 * 1000 // seção expira em 3 dias
                 );
-                let token = jwt.sign({ username: emailLogar }, 'secretKey')
+                let token = jwt.sign({ username: emailLogar, idUser : userData.id, isAdmin : userData.isAdmin }, 'secretKey')
                 res.status(200).json(token);
             } else {
                 res.status(400).json({
