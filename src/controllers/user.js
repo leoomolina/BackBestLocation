@@ -48,8 +48,10 @@ userController.newUser = (req, res) => {
                                     firstName: req.body.firstName,
                                     lastName: req.body.lastName,
                                     cpf: req.body.cpf,
-                                    telefone: req.body.telefone,
                                     tipo: req.body.tipo,
+                                    dtNascimento: req.body.dtNascimento,
+                                    sexo: req.body.sexo,
+                                    telefone: req.body.telefone,
                                     email: req.body.email,
                                     password: encryptedPassword,
                                     isAdmin: req.body.isAdmin
@@ -138,6 +140,8 @@ userController.updateUser = (req, res) => {
             user.lastName = req.body.lastName;
             user.cpf = req.body.cpf;
             user.telefone = req.body.telefone;
+            user.dtNascimento = req.body.dtNascimento;
+            user.sexo = req.body.sexo;
             user.tipo = req.body.tipo;
             user.password = req.body.password;
             user.email = req.body.email;

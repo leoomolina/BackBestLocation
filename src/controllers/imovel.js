@@ -7,19 +7,34 @@ const modelImovel = mongoose.model('Imovel');
 // inicializando objeto imovelController
 let imovelController = {};
 
-imovelController.allImoveis = (req, res) => {
-
-    modelImovel.find()
-        .then(results => res.json(results))
-        .catch(err => res.send(err));
+imovelController.getImoveis = (req, res) => {
+    if (req.params.filter) {
+        const id = req.params.filter;
+        modelImovel.findById(id)
+            .then(result => res.json(result))
+            .catch(err => res.send(err));
+    }
+    else {
+        modelImovel.find()
+            .then(results => res.json(results))
+            .catch(err => res.send(err));
+    }
 }
 
-imovelController.detailsImovel = (req, res) => {
-    const id = req.params.imovel_id;
-
-    modelImovel.findById(id)
-        .then(result => res.json(result))
-        .catch(err => res.send(err));
+imovelController.getImoveisUsuario = (req, res) => {
+    idUsuario = req.params.idUsuario;
+    if (idUsuario) {
+        modelImovel.find({ usuarioId: idUsuario })
+            .then(results => res.json(results))
+            .catch(err => res.send(err));;
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Usuário inválido.",
+            statusCode: 500
+        })
+    }
 }
 
 imovelController.deleteImovel = (req, res) => {
@@ -49,69 +64,89 @@ imovelController.updateImovel = (req, res) => {
             });
         }
         else {
-            imovel.titulo = req.body.titulo;
-            imovel.status = req.body.status;
-            imovel.area = req.body.area;
-            imovel.descricao = req.body.descricao;
-            imovel.cep = req.body.cep;
-            imovel.endereco = req.body.endereco;
-            imovel.numEndereco = req.body.numEndereco;
-            imovel.complementoEndereco = req.body.complementoEndereco;
-            imovel.bairro = req.body.bairro;
-            imovel.uf = req.body.uf;
-            imovel.cidade = req.body.cidade;
-            imovel.numQuartos = req.body.numQuartos;
-            imovel.numBanheiros = req.body.numBanheiros;
-            imovel.preco = req.body.preco;
+            if (req.session.user) {
+                imovel.titulo = req.body.titulo;
+                imovel.status = req.body.status;
+                imovel.area = req.body.area;
+                imovel.descricao = req.body.descricao;
+                imovel.cep = req.body.cep;
+                imovel.endereco = req.body.endereco;
+                imovel.numEndereco = req.body.numEndereco;
+                imovel.complementoEndereco = req.body.complementoEndereco;
+                imovel.bairro = req.body.bairro;
+                imovel.uf = req.body.uf;
+                imovel.cidade = req.body.cidade;
+                imovel.numQuartos = req.body.numQuartos;
+                imovel.numBanheiros = req.body.numBanheiros;
+                imovel.preco = req.body.preco;
 
-            imovel.save(function (error) {
-                if (error)
-                    res.send("Erro ao atualizar o imóvel: " + error);
+                imovel.save(function (error) {
+                    if (error)
+                        res.send("Erro ao atualizar o imóvel: " + error);
 
-                res.status(200).json({
-                    message: "Imóvel atualizado com sucesso"
+                    res.status(200).json({
+                        message: "Imóvel atualizado com sucesso"
+                    });
                 });
-            });
+            }
+            else {
+                res.json({
+                    success: false,
+                    message: "Usuário sem permissão para atualizar imóvel.",
+                    statusCode: 400
+                })
+            }
         }
+
     });
 }
 
 imovelController.newImovel = (req, res) => {
-    let newImovel = new modelImovel({
-        titulo: req.body.titulo,
-        status: req.body.status,
-        endereco: req.body.endereco,
-        numEndereco: req.body.numEndereco,
-        complementoEndereco: req.body.complementoEndereco,
-        cidade: req.body.cidade,
-        cep: req.body.cep,
-        bairro : req.body.bairro,
-        uf : req.body.uf,
-        area: req.body.area,
-        descricao: req.body.descricao,
-        numQuartos: req.body.numQuartos,
-        numBanheiros: req.body.numBanheiros,
-        preco: req.body.preco
-    });
+    if (req.session.user) {
+        let newImovel = new modelImovel({
+            titulo: req.body.titulo,
+            status: req.body.status,
+            endereco: req.body.endereco,
+            numEndereco: req.body.numEndereco,
+            complementoEndereco: req.body.complementoEndereco,
+            cidade: req.body.cidade,
+            cep: req.body.cep,
+            bairro: req.body.bairro,
+            uf: req.body.uf,
+            area: req.body.area,
+            descricao: req.body.descricao,
+            numQuartos: req.body.numQuartos,
+            numBanheiros: req.body.numBanheiros,
+            preco: req.body.preco,
+            usuarioId: req.session.user.id
+        });
 
-    newImovel.save()
-        .then(() => res.json({
-            success: true,
-            message: 'Imovel inserido com sucesso',
-            statusCode: 201
-        }))
-        .catch(err => res.json({
+        newImovel.save()
+            .then(() => res.json({
+                success: true,
+                message: 'Imóvel inserido com sucesso',
+                statusCode: 201
+            }))
+            .catch(err => res.json({
+                success: false,
+                message: err,
+                statusCode: 500
+            }));
+    }
+    else {
+        res.json({
             success: false,
-            message: err,
-            statusCode: 500
-        }));
+            message: "Usuário sem permissão para cadastrar imóvel.",
+            statusCode: 400
+        })
+    }
 }
 
 imovelController.searchImovel = (req, res, next) => {
     var searchParams = req.query.query;
-    modelImovel.find({ cidade: { $regex: '.*'+searchParams+'.*' }}, function (e, docs) {
-        res.json({ 
-            results: true, 
+    modelImovel.find({ cidade: { $regex: '.*' + searchParams + '.*' } }, function (e, docs) {
+        res.json({
+            results: true,
             search: req.query.query,
             list: docs
         });

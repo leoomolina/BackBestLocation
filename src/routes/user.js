@@ -18,5 +18,5 @@ module.exports = (app) => {
         .post(userController.loginUser);
         
     app.route('/api/users/logout')
-        .get(userController.logoutUser);
+        .post(userController.logoutUser);
 }

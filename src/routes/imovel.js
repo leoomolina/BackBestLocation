@@ -5,14 +5,15 @@ const imovelController = require('../controllers/imovel');
 module.exports = (app) => {
 
     // route invoca Expresse Router
-    app.route('/api/imoveis')
-        .get(imovelController.allImoveis)
+
+    app.route('/api/imoveis/:filter?')
+        .get(imovelController.getImoveis)
+        .delete(imovelController.deleteImovel)
+        .put(imovelController.updateImovel)
         .post(imovelController.newImovel);
 
-    app.route('/api/imoveis/:imovel_id')
-        .get(imovelController.detailsImovel)
-        .delete(imovelController.deleteImovel)
-        .put(imovelController.updateImovel);
+    app.route('/api/imovel/user/:idUsuario?')
+        .get(imovelController.getImoveisUsuario);
 
     app.route('/api/searchimovel')
         .get(imovelController.searchImovel);

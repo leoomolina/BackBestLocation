@@ -64,6 +64,10 @@ const imovelSchema = new Schema ({
     uf: {
         type: String,
         default: ''
+    },
+    usuarioId: {
+        type: String,
+        required: true
     }
 });
 

@@ -26,6 +26,21 @@ let UserSchema = new Schema({
         required: true,
         trim: true
     },
+    dtNascimento: {
+        type: Date,
+        required: false,
+        trim: true
+    },
+    sexo: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    telefone: {
+        type: String,
+        required: false,
+        trim: true
+    },
     email: {
         type: String,
         required: true,
