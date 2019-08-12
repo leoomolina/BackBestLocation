@@ -6,7 +6,7 @@ module.exports = (app) => {
 
     // route invoca Expresse Router
 
-    app.route('/api/imoveis/:filter?')
+    app.route('/api/imoveis/:id_imovel/:id_usuario')
         .get(imovelController.getImoveis)
         .delete(imovelController.deleteImovel)
         .put(imovelController.updateImovel)
