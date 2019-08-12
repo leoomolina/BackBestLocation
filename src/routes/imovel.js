@@ -12,10 +12,10 @@ module.exports = (app) => {
     app.route('/api/imoveis/:id_imovel/:idUsuario')
         .delete(imovelController.deleteImovel)
         .put(imovelController.updateImovel)
-        .post(imovelController.newImovel);
 
     app.route('/api/imoveis/user/:idUsuario?')
-        .get(imovelController.getImoveisUsuario);
+        .get(imovelController.getImoveisUsuario)
+        .post(imovelController.newImovel);
 
     app.route('/api/searchimovel')
         .get(imovelController.searchImovel);
