@@ -64,7 +64,7 @@ imovelController.updateImovel = (req, res) => {
             });
         }
         else {
-            if (req.params.id_usuario) {
+            if (req.params.idUsuario) {
                 imovel.titulo = req.body.titulo;
                 imovel.status = req.body.status;
                 imovel.area = req.body.area;
@@ -102,7 +102,7 @@ imovelController.updateImovel = (req, res) => {
 }
 
 imovelController.newImovel = (req, res) => {
-    if (req.params.id_usuario) {
+    if (req.params.idUsuario) {
         let newImovel = new modelImovel({
             titulo: req.body.titulo,
             status: req.body.status,
@@ -118,7 +118,7 @@ imovelController.newImovel = (req, res) => {
             numQuartos: req.body.numQuartos,
             numBanheiros: req.body.numBanheiros,
             preco: req.body.preco,
-            usuarioId: req.params.id_usuario
+            usuarioId: req.params.idUsuario
         });
 
         newImovel.save()
