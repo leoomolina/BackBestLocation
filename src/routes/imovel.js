@@ -14,7 +14,7 @@ module.exports = (app) => {
         .put(imovelController.updateImovel)
         .post(imovelController.newImovel);
 
-    app.route('/api/imovel/user/:idUsuario?')
+    app.route('/api/imoveis/user/:idUsuario?')
         .get(imovelController.getImoveisUsuario);
 
     app.route('/api/searchimovel')
