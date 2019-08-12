@@ -102,6 +102,7 @@ imovelController.updateImovel = (req, res) => {
 }
 
 imovelController.newImovel = (req, res) => {
+    console.log(req.session.user)
     if (req.session.user) {
         let newImovel = new modelImovel({
             titulo: req.body.titulo,
@@ -136,7 +137,7 @@ imovelController.newImovel = (req, res) => {
     else {
         res.json({
             success: false,
-            message: "Usuário sem permissão para cadastrar imóvel.",
+            message: "Usuário sem permissão para cadastrar imóvel."+ req.session.user,
             statusCode: 400
         })
     }
