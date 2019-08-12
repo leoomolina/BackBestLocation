@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 const url = process.env.MONGOLAB_URI;
-console.log(url);
+//console.log(url);
 mongoose.connect('mongodb://bestadmin:Admin1@ds053449.mlab.com:53449/heroku_kmb7qhcw', { useNewUrlParser: true })
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);

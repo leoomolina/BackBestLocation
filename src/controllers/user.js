@@ -143,9 +143,11 @@ userController.updateUser = (req, res) => {
             user.dtNascimento = req.body.dtNascimento;
             user.sexo = req.body.sexo;
             user.tipo = req.body.tipo;
-            user.password = req.body.password;
             user.email = req.body.email;
             user.isAdmin = req.body.isAdmin;
+
+            if(req.body.password != null)
+                user.password = req.body.password;
 
             user.save(function (error) {
                 if (error)
