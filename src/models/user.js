@@ -54,7 +54,7 @@ let UserSchema = new Schema({
     },
     isAdmin: {
         type: Boolean,
-        default: true
+        default: false
     },
     passResetKey: String,
     passKeyExpires: Number,
