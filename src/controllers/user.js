@@ -186,6 +186,7 @@ userController.loginUser = (req, res) => {
                     isAdmin : userData.isAdmin,
                     id: userData.id
                 }; // salvando os dados de alguns usuários na sessão do usuário
+                console.log(req.session.user)
                 req.session.user.expires = new Date(
                     Date.now() + 3 * 24 * 3600 * 1000 // seção expira em 3 dias
                 );
