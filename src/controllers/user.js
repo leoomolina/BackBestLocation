@@ -101,7 +101,7 @@ userController.newUser = (req, res) => {
 // GET
 userController.detailsUser = (req, res) => {
     const id = req.params.user_id;
-
+    console.log(req.session.user)
     modelUser.findById(id)
         .then(result => res.json(result))
         .catch(err => res.send(err));
