@@ -8,8 +8,8 @@ const modelImovel = mongoose.model('Imovel');
 let imovelController = {};
 
 imovelController.getImoveis = (req, res) => {
-    if (req.params.filter) {
-        const id = req.params.filter;
+    if (req.params.id_imovel) {
+        const id = req.params.id_imovel;
         modelImovel.findById(id)
             .then(result => res.json(result))
             .catch(err => res.send(err));
