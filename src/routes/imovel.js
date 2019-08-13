@@ -8,7 +8,6 @@ module.exports = (app) => {
 
     app.route('/api/imoveis/:id_imovel')
         .get(imovelController.getImoveis)
-        .get(imovelController.detailsImoveis)
 
     app.route('/api/imoveis/:id_imovel/:idUsuario')
         .delete(imovelController.deleteImovel)
