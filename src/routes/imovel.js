@@ -6,17 +6,20 @@ module.exports = (app) => {
 
     // route invoca Expresse Router
 
-    app.route('/api/imoveis/:id_imovel?')
+    app.route('/api/imovel/buscar/:idImovel?')
         .get(imovelController.getImoveis)
 
-    app.route('/api/imoveis/:id_imovel/:idUsuario')
+    app.route('/api/imovel/usuario/:idUsuario/:idImovel')
         .delete(imovelController.deleteImovel)
         .put(imovelController.updateImovel)
 
-    app.route('/api/imoveis/user/:idUsuario?')
+    app.route('/api/imovel/admin/:idImovel')
+        .delete(imovelController.deleteImovelAdmin)
+
+    app.route('/api/imovel/usuario/:idUsuario?')
         .get(imovelController.getImoveisUsuario)
         .post(imovelController.newImovel);
 
-    app.route('/api/searchimovel')
+    app.route('/api/imovel/searchimovel')
         .get(imovelController.searchImovel);
 }

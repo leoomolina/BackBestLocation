@@ -8,8 +8,8 @@ const modelImovel = mongoose.model('Imovel');
 let imovelController = {};
 
 imovelController.getImoveis = (req, res) => {
-    if (req.params.id_imovel) {
-        const id = req.params.id_imovel;
+    if (req.params.idImovel) {
+        const id = req.params.idImovel;
         modelImovel.findById(id)
             .then(result => res.json(result))
             .catch(err => res.send(err));
@@ -38,11 +38,32 @@ imovelController.getImoveisUsuario = (req, res) => {
 }
 
 imovelController.deleteImovel = (req, res) => {
-    modelImovel.findByIdAndRemove(req.params.imovel_id, (err, imovel) => {
+    if (req.params.idUsuario) {
+        modelImovel.findByIdAndRemove(req.params.idImovel, (err, imovel) => {
+            if (err) return res.status(500).send(err);
+
+            const response = {
+                message: "Imovel removido com sucesso",
+                id: imovel.id
+            };
+            return res.status(200).send(response);
+        });
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Usuário sem permissão para atualizar imóvel.",
+            statusCode: 400
+        })
+    }
+}
+
+imovelController.deleteImovelAdmin = (req, res) => {
+    modelImovel.findByIdAndRemove(req.params.idImovel, (err, imovel) => {
         if (err) return res.status(500).send(err);
 
         const response = {
-            message: "Imovel removido com sucesso",
+            message: "Imóvel removido com sucesso",
             id: imovel.id
         };
         return res.status(200).send(response);
@@ -50,7 +71,7 @@ imovelController.deleteImovel = (req, res) => {
 }
 
 imovelController.updateImovel = (req, res) => {
-    const id = req.params.imovel_id;
+    const id = req.params.idImovel;
 
     modelImovel.findById(id, (err, imovel) => {
         if (err) {
