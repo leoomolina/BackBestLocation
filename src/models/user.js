@@ -4,6 +4,10 @@ var mongoose = require('mongoose');
 // guardando valor de mongoose.Schema (apenas para facilitar na hora de escrever)
 const Schema = mongoose.Schema;
 
+var imoveisFavorites = new Schema({
+    userId : {type: mongoose.Schema.Types.ObjectId, ref: 'Imovel'}
+});
+
 // objeto instância do Schema
 let UserSchema = new Schema({
     firstName: {
@@ -56,6 +60,7 @@ let UserSchema = new Schema({
         type: Boolean,
         default: false
     },
+    imoveisFavorites: [imoveisFavorites],
     passResetKey: String,
     passKeyExpires: Number,
     createdAt: {
@@ -66,13 +71,11 @@ let UserSchema = new Schema({
         type: Number,
         required: false
     }
-// 'runSettersOnQuery' is used to implement the specifications in our model schema such as the 'trim' option.
+// 'runSettersOnQuery' usado para implementar as especificações no esquema de modelo
 }, {runSttersOnQuery: true} );
 
 UserSchema.pre('save', function (next) {
-    this.email = this
-      .email
-      .toLowerCase(); // ensure email are in lowercase
+    this.email = this.email.toLowerCase(); // ensure email are in lowercase
   
     var currentDate = new Date().getTime();
     this.updatedAt = currentDate;

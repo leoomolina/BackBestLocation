@@ -101,9 +101,6 @@ userController.newUser = (req, res) => {
 // GET
 userController.detailsUser = (req, res) => {
     const id = req.params.user_id;
-    console.log(req)
-    console.log(req.session)
-    console.log(req.session.user)
     modelUser.findById(id)
         .then(result => res.json(result))
         .catch(err => res.send(err));
@@ -190,7 +187,6 @@ userController.loginUser = (req, res) => {
                     isAdmin : userData.isAdmin,
                     id: userData.id
                 }; // salvando os dados de alguns usuários na sessão do usuário
-                console.log(req.session.user)
                 req.session.user.expires = new Date(
                     Date.now() + 3 * 24 * 3600 * 1000 // seção expira em 3 dias
                 );

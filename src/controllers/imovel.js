@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 // atribuição do model registrado à variável modelImovel
 const modelImovel = mongoose.model('Imovel');
+const modelUser = mongoose.model('User');
 
 // inicializando objeto imovelController
 let imovelController = {};
@@ -35,6 +36,59 @@ imovelController.getImoveisUsuario = (req, res) => {
             statusCode: 500
         })
     }
+}
+
+imovelController.getImoveisFavorito = (req, res) => {
+    idUsuario = req.params.idUsuario;
+    if (idUsuario) {
+        modelUser.findById(idUsuario, (err, userData) => {
+            if (!err) {
+                idImoveisFavoritos = userData.imoveisFavorites;
+                modelImovel.find({_id : idImoveisFavoritos})
+                    .then(results => res.json(results))
+                    .catch(err => res.status(401).send(err));
+            } else {
+                res.status(401).send('Erro ao conectar no banco: ' + err);
+                return;
+            }
+        });
+    }
+    else {
+        res.json({
+            success: false,
+            message: "Usuário não encontrado.",
+            statusCode: 500
+        })
+    }
+}
+
+imovelController.favoriteImovel = (req, res) => {
+    idUsuario = req.params.idUsuario;
+    idImovel = req.params.idImovel;
+
+    //Parâmetros recebidos via request
+    //var user = req.body.user;
+    //var favoriteId = req.body.favoriteId;
+    idUsuario = req.params.idUsuario;
+    idImovel = req.params.idImovel;
+    modelUser.findById({ '_id': idUsuario }, function (err, usuario) {
+        //Verifica se o ID do imóvel a ser favoritado existe no sub-documento do usuário solicitante
+        var fav = usuario.imoveisFavorites.id(idImovel)
+        if (fav) {
+            // Remove caso exista
+            fav.remove();
+        } else {
+            //Caso não exista, inclua.
+            usuario.imoveisFavorites.push({ _id: idImovel });
+        }
+        //Salvo o documento com seus sub-documentos atualizados.
+        usuario.save(function (err) {
+            if (err) 
+                res.send("Erro ao favoritar o imóvel: " + err);
+            
+            res.status(200).json({message: "Imóvel favoritado com sucesso."});
+        });
+    });
 }
 
 imovelController.deleteImovel = (req, res) => {
@@ -118,7 +172,6 @@ imovelController.updateImovel = (req, res) => {
                 })
             }
         }
-
     });
 }
 

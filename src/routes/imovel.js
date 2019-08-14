@@ -20,6 +20,10 @@ module.exports = (app) => {
         .get(imovelController.getImoveisUsuario)
         .post(imovelController.newImovel);
 
+    app.route('/api/imovel/favoritos/:idUsuario/:idImovel?')
+        .get(imovelController.getImoveisFavorito)
+        .put(imovelController.favoriteImovel);
+
     app.route('/api/imovel/searchimovel')
         .get(imovelController.searchImovel);
 }
