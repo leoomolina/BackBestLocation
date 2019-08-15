@@ -16,18 +16,68 @@ imovelController.getImoveis = (req, res) => {
             .catch(err => res.send(err));
     }
     else {
-        modelImovel.find()
-            .then(results => res.json(results))
-            .catch(err => res.send(err));
+        var pageNo = parseInt(req.query.pageNo);
+        var size = parseInt(req.query.size);
+        var query = {};
+        if (pageNo < 0 || pageNo === 0) {
+            response = { "error": true, "message": "Número da página inválido" };
+            return res.json(response);
+        }
+        query.skip = size * (pageNo - 1);
+        query.limit = size;
+
+        // Soma de Imóveis retornados
+        modelImovel.countDocuments({}, function (err, totalCount) {
+            if (err) {
+                results = { "error": true, "message": "Error fetching data" };
+            }
+
+            modelImovel.find({}, {}, query, function (err, data) {
+                if (err) {
+                    results = { "error": true, "message": "Error fetching data" };
+                } else {
+                    var totalPages = Math.ceil(totalCount / size)
+                    results = { "error": false, "message": data, "pages": totalPages };
+                }
+                res.json(results);
+            })
+        })
     }
 }
 
 imovelController.getImoveisUsuario = (req, res) => {
     idUsuario = req.params.idUsuario;
+
+    var pageNo = parseInt(req.query.pageNo)
+    var size = parseInt(req.query.size)
+
+    var query = {}
+
+    if (pageNo < 0 || pageNo === 0) {
+        response = { "error": true, "message": "Número da página inválido" };
+        return res.json(response)
+    }
+
+    query.skip = size * (pageNo - 1)
+    query.limit = size
+
     if (idUsuario) {
-        modelImovel.find({ usuarioId: idUsuario })
-            .then(results => res.json(results))
-            .catch(err => res.send(err));;
+        // Soma de Imóveis retornados
+        modelImovel.countDocuments({}, function (err, totalCount) {
+            if (err) {
+                results = { "error": true, "message": "Error fetching data" };
+            }
+
+            modelImovel.find({ usuarioId: idUsuario }, {}, query, function (err, data) {
+                if (err) {
+                    results = { "error": true, "message": "Error fetching data" };
+                } else {
+                    var totalPages = Math.ceil(totalCount / size)
+                    results = { "error": false, "message": data, "pages": totalPages };
+                }
+                res.json(results);
+            })
+        })
     }
     else {
         res.json({
@@ -44,7 +94,7 @@ imovelController.getImoveisFavorito = (req, res) => {
         modelUser.findById(idUsuario, (err, userData) => {
             if (!err) {
                 idImoveisFavoritos = userData.imoveisFavorites;
-                modelImovel.find({_id : idImoveisFavoritos})
+                modelImovel.find({ _id: idImoveisFavoritos })
                     .then(results => res.json(results))
                     .catch(err => res.status(401).send(err));
             } else {
@@ -78,10 +128,10 @@ imovelController.favoriteImovel = (req, res) => {
         }
         //Salvo o documento com seus sub-documentos atualizados.
         usuario.save(function (err) {
-            if (err) 
+            if (err)
                 res.send("Erro ao favoritar o imóvel: " + err);
-            
-            res.status(200).json({message: "Imóvel favoritado com sucesso."});
+
+            res.status(200).json({ message: "Imóvel favoritado com sucesso." });
         });
     });
 }
