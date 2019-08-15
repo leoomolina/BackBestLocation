@@ -11,6 +11,10 @@ const imovelSchema = new Schema ({
         required: true,
         default: ''
     },
+    tipoImovel: {
+        type: String,
+        required: true
+    },
     endereco: {
         type: String,
         required: true,

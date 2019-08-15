@@ -66,11 +66,6 @@ imovelController.favoriteImovel = (req, res) => {
     idUsuario = req.params.idUsuario;
     idImovel = req.params.idImovel;
 
-    //Parâmetros recebidos via request
-    //var user = req.body.user;
-    //var favoriteId = req.body.favoriteId;
-    idUsuario = req.params.idUsuario;
-    idImovel = req.params.idImovel;
     modelUser.findById({ '_id': idUsuario }, function (err, usuario) {
         //Verifica se o ID do imóvel a ser favoritado existe no sub-documento do usuário solicitante
         var fav = usuario.imoveisFavorites.id(idImovel)
@@ -142,6 +137,7 @@ imovelController.updateImovel = (req, res) => {
             if (req.params.idUsuario) {
                 imovel.titulo = req.body.titulo;
                 imovel.status = req.body.status;
+                imovel.tipoImovel = req.body.tipoImovel;
                 imovel.area = req.body.area;
                 imovel.descricao = req.body.descricao;
                 imovel.cep = req.body.cep;
@@ -180,6 +176,7 @@ imovelController.newImovel = (req, res) => {
         let newImovel = new modelImovel({
             titulo: req.body.titulo,
             status: req.body.status,
+            tipoImovel: req.body.tipoImovel,
             endereco: req.body.endereco,
             numEndereco: req.body.numEndereco,
             complementoEndereco: req.body.complementoEndereco,
