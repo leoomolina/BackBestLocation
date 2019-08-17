@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var imoveisFavorites = new Schema({
-    userId : {type: mongoose.Schema.Types.ObjectId, ref: 'Imovel'}
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Imovel' }
 });
 
 // objeto instância do Schema
@@ -71,19 +71,19 @@ let UserSchema = new Schema({
         type: Number,
         required: false
     }
-// 'runSettersOnQuery' usado para implementar as especificações no esquema de modelo
-}, {runSttersOnQuery: true} );
+    // 'runSettersOnQuery' usado para implementar as especificações no esquema de modelo
+}, { runSttersOnQuery: true });
 
 UserSchema.pre('save', function (next) {
     this.email = this.email.toLowerCase(); // ensure email are in lowercase
-  
+
     var currentDate = new Date().getTime();
     this.updatedAt = currentDate;
-    if (!this.created_at) {
-      this.createdAt = currentDate;
+    if (!this.createdAt) {
+        this.createdAt = currentDate;
     }
     next();
-  })
+})
 
 // registrando model utilizando objeto criado
 mongoose.model('User', UserSchema);

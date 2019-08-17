@@ -186,20 +186,42 @@ imovelController.updateImovel = (req, res) => {
         else {
             if (req.params.idUsuario) {
                 imovel.titulo = req.body.titulo;
-                imovel.status = req.body.status;
                 imovel.tipoImovel = req.body.tipoImovel;
-                imovel.area = req.body.area;
+                imovel.status = req.body.status;
+                imovel.numQuartos = req.body.numQuartos;
+                imovel.numVagasGaragem = req.body.numVagasGaragem;
+                imovel.numBanheiros = req.body.numBanheiros;
                 imovel.descricao = req.body.descricao;
+                imovel.valorImovel = req.body.valorImovel;
+                imovel.valorCondominio = req.body.valorCondominio;
+                imovel.valorIptu = req.body.valorIptu;
+                imovel.area = req.body.area;
                 imovel.cep = req.body.cep;
                 imovel.endereco = req.body.endereco;
                 imovel.numEndereco = req.body.numEndereco;
                 imovel.complementoEndereco = req.body.complementoEndereco;
                 imovel.bairro = req.body.bairro;
-                imovel.uf = req.body.uf;
                 imovel.cidade = req.body.cidade;
-                imovel.numQuartos = req.body.numQuartos;
-                imovel.numBanheiros = req.body.numBanheiros;
-                imovel.preco = req.body.preco;
+                imovel.uf = req.body.uf;
+                imovel.areaServico = req.body.areaServico;
+                imovel.arCondicionado = req.body.arCondicionado;
+                imovel.churrasqueira = req.body.churrasqueira;
+                imovel.piscina = req.body.piscina;
+                imovel.varanda = req.body.varanda;
+                imovel.mobiliado = req.body.mobiliado;
+                imovel.armariosCozinha = req.body.armariosCozinha;
+                imovel.armariosQuarto = req.body.armariosQuarto;
+                imovel.quartoServico = req.body.quartoServico;
+                imovel.emCondominio = req.body.emCondominio;
+
+                if (imovel.emCondominio == true) {
+                    imovel.detalhesCondominio.fechado = req.body.detalhesCondominio.fechado;
+                    imovel.detalhesCondominio.seg24hrs = req.body.detalhesCondominio.seg24hrs;
+                    imovel.detalhesCondominio.podeAnimal = req.body.detalhesCondominio.podeAnimal;
+                    imovel.detalhesCondominio.piscina = req.body.detalhesCondominio.piscina;
+                    imovel.detalhesCondominio.academia = req.body.detalhesCondominio.academia;
+                    imovel.detalhesCondominio.portaoEletrico = req.body.detalhesCondominio.portaoEletrico;
+                }
 
                 imovel.save(function (error) {
                     if (error)
@@ -225,28 +247,59 @@ imovelController.newImovel = (req, res) => {
     if (req.params.idUsuario) {
         let newImovel = new modelImovel({
             titulo: req.body.titulo,
-            status: req.body.status,
             tipoImovel: req.body.tipoImovel,
+            status: req.body.status,
+            numQuartos: req.body.numQuartos,
+            numVagasGaragem: req.body.numVagasGaragem,
+            numBanheiros: req.body.numBanheiros,
+            descricao: req.body.descricao,
+            valorImovel: req.body.valorImovel,
+            valorCondominio: req.body.valorCondominio,
+            valorIptu: req.body.valorIptu,
+            area: req.body.area,
+            cep: req.body.cep,
             endereco: req.body.endereco,
             numEndereco: req.body.numEndereco,
             complementoEndereco: req.body.complementoEndereco,
-            cidade: req.body.cidade,
-            cep: req.body.cep,
             bairro: req.body.bairro,
+            cidade: req.body.cidade,
             uf: req.body.uf,
-            area: req.body.area,
-            descricao: req.body.descricao,
-            numQuartos: req.body.numQuartos,
-            numBanheiros: req.body.numBanheiros,
-            preco: req.body.preco,
-            usuarioId: req.params.idUsuario
+            areaServico: req.body.areaServico,
+            arCondicionado: req.body.arCondicionado,
+            churrasqueira: req.body.churrasqueira,
+            piscina: req.body.piscina,
+            varanda: req.body.varanda,
+            mobiliado: req.body.mobiliado,
+            armariosCozinha: req.body.armariosCozinha,
+            armariosQuarto: req.body.armariosQuarto,
+            quartoServico: req.body.quartoServico,
+            emCondominio: req.body.emCondominio,
+            detalhesCondominio: {
+                fechado: false,
+                seg24hrs: false,
+                podeAnimal: false,
+                piscina: false,
+                academia: false,
+                portaoEletrico: false
+            },
         });
+
+        if (newImovel.emCondominio == true) {
+            newImovel.detalhesCondominio.fechado = req.body.detalhesCondominio.fechado;
+            newImovel.detalhesCondominio.seg24hrs = req.body.detalhesCondominio.seg24hrs;
+            newImovel.detalhesCondominio.podeAnimal = req.body.detalhesCondominio.podeAnimal;
+            newImovel.detalhesCondominio.piscina = req.body.detalhesCondominio.piscina;
+            newImovel.detalhesCondominio.academia = req.body.detalhesCondominio.academia;
+            newImovel.detalhesCondominio.portaoEletrico = req.body.detalhesCondominio.portaoEletrico;
+        }
+
+        newImovel.usuarioId = { _id: req.params.idUsuario };
 
         newImovel.save()
             .then(() => res.json({
                 success: true,
                 message: 'Imóvel inserido com sucesso',
-                statusCode: 201
+                statusCode: 200
             }))
             .catch(err => res.json({
                 success: false,
