@@ -32,6 +32,7 @@ userController.newUser = (req, res) => {
                     if (user) {
                         res.json({
                             success: false,
+                            statusCode: 400,
                             message: 'CPF ou email indisponível'
                         });
                     } else {
