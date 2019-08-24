@@ -10,10 +10,55 @@ let imovelController = {};
 
 imovelController.getImoveis = (req, res) => {
     if (req.params.idImovel) {
-        const id = req.params.idImovel;
-        modelImovel.findById(id)
-            .then(result => res.json(result))
-            .catch(err => res.send(err));
+        const idImovel = req.params.idImovel;
+        const idUsuario = req.params.idUsuario;
+        var promises = [];
+        var imovelDetail = [];
+        imovelDetail[0] = { "isFavorite": false };
+
+        var promiseImovel = new Promise(function (resolve, reject) {
+            modelImovel.findById(idImovel, function (err, imovel) {
+                if (err || !imovel) {
+                    res.status(400).send(err);
+                } else {
+                    imovelDetail.push(imovel);
+                    if (!idUsuario) {
+                        const results = { "error": false, "results": imovelDetail };
+                        Promise.all(promises);
+                        res.status(200).json(results);
+                    }
+                    resolve(true);
+                }
+            });
+        });
+        promises.push(promiseImovel);
+
+        if (idUsuario != null) {
+        var promiseUsuario = new Promise(function (resolve, reject) {
+            modelUser.findById(idUsuario, function (err, usuario) {
+                if (err || !usuario) {
+                    res.status(400).send('Erro: ' + err);
+                } else {
+                    if (imovelDetail.length < 2)
+                            res.status(400).send('Erro: imóvel não encontrado');
+                    usuario.imoveisFavorites.forEach(element => {
+                        if (element.id == imovelDetail[1].id) {
+                            imovelDetail[0].isFavorite = true;
+                            return;
+                        }
+                        else {
+                            imovelDetail[0].isFavorite = false;
+                        }
+                    });
+                    const results = { "error": false, "results": imovelDetail };
+                    resolve(true);
+                    promises.push(promiseUsuario);
+                    res.status(200).json(results);
+                }
+            });
+        });
+    }
+        Promise.all(promises);
     }
     else {
         var pageNo = parseInt(req.query.pageNo);
