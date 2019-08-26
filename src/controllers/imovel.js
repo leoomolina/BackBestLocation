@@ -82,7 +82,7 @@ imovelController.getImoveis = (req, res) => {
                     results = { "success": false, "message": "Error fetching data" };
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
-                    results = { "success": true, "data": data, "pages": totalPages };
+                    results = { "success": true, data, "pages": totalPages };
                 }
                 res.json(results);
             })
@@ -118,7 +118,7 @@ imovelController.getImoveisUsuario = (req, res) => {
                     results = { "success": false, "message": "Error fetching data" };
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
-                    results = { "success": true, "data": data, "pages": totalPages };
+                    results = { "success": true, data, "pages": totalPages };
                 }
                 res.json(results);
             })
