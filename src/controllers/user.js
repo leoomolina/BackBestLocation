@@ -23,10 +23,12 @@ userController.newUser = (req, res) => {
     if (req.body.cpf && req.body.email && req.body.password) {
         if (req.body.password2 && req.body.password == req.body.password2) {
 
-            modelUser.findOne({ $or : [
-                {'cpf': req.body.cpf },
-                {'email': req.body.email }
-            ]})
+            modelUser.findOne({
+                $or: [
+                    { 'cpf': req.body.cpf },
+                    { 'email': req.body.email }
+                ]
+            })
                 .then(user => {
 
                     if (user) {
@@ -110,7 +112,8 @@ userController.detailsUser = (req, res) => {
 // DELETE
 userController.deleteUser = (req, res) => {
     modelUser.findByIdAndRemove(req.params.user_id, (err, user) => {
-        if (err) return res.status(500).send(err);
+        if (err)
+            return res.status(500).json({ message: "Erro ao encontrar o usuário: ID incorreto" });
 
         const response = {
             message: "Usuário removido com sucesso",
@@ -146,7 +149,7 @@ userController.updateUser = (req, res) => {
             user.email = req.body.email;
             user.isAdmin = req.body.isAdmin;
 
-            if(req.body.password != null)
+            if (req.body.password != null)
                 user.password = req.body.password;
 
             user.save(function (error) {
@@ -164,7 +167,7 @@ userController.updateUser = (req, res) => {
 // LOGIN
 userController.loginUser = (req, res) => {
     let { emailLogar, passwordLogar } = req.body;
-    if (!emailLogar){
+    if (!emailLogar) {
         res.status(400).json({
             success: false,
             message: 'Usuário é obrigatório.',
@@ -185,13 +188,13 @@ userController.loginUser = (req, res) => {
             if (passwordCheck) { // usando o bcrypt para verificar o hash da senha do banco de dados em relação à senha fornecida pelo usuário
                 req.session.user = {
                     emailLogar: userData.email,
-                    isAdmin : userData.isAdmin,
+                    isAdmin: userData.isAdmin,
                     id: userData.id
                 }; // salvando os dados de alguns usuários na sessão do usuário
                 req.session.user.expires = new Date(
                     Date.now() + 3 * 24 * 3600 * 1000 // seção expira em 3 dias
                 );
-                let token = jwt.sign({ username: emailLogar, idUser : userData.id, isAdmin : userData.isAdmin }, 'secretKey')
+                let token = jwt.sign({ username: emailLogar, idUser: userData.id, isAdmin: userData.isAdmin }, 'secretKey')
                 res.status(200).json(token);
             } else {
                 res.status(400).json({
