@@ -34,30 +34,30 @@ imovelController.getImoveis = (req, res) => {
         promises.push(promiseImovel);
 
         if (idUsuario != null) {
-        var promiseUsuario = new Promise(function (resolve, reject) {
-            modelUser.findById(idUsuario, function (err, usuario) {
-                if (err || !usuario) {
-                    res.status(400).send('Erro: ' + err);
-                } else {
-                    if (imovelDetail.length < 2)
+            var promiseUsuario = new Promise(function (resolve, reject) {
+                modelUser.findById(idUsuario, function (err, usuario) {
+                    if (err || !usuario) {
+                        res.status(400).send('Erro: ' + err);
+                    } else {
+                        if (imovelDetail.length < 2)
                             res.status(400).send('Erro: imóvel não encontrado');
-                    usuario.imoveisFavorites.forEach(element => {
-                        if (element.id == imovelDetail[1].id) {
-                            imovelDetail[0].isFavorite = true;
-                            return;
-                        }
-                        else {
-                            imovelDetail[0].isFavorite = false;
-                        }
-                    });
-                    const results = { "success": true, "data": imovelDetail };
-                    resolve(true);
-                    promises.push(promiseUsuario);
-                    res.status(200).json(results);
-                }
+                        usuario.imoveisFavorites.forEach(element => {
+                            if (element.id == imovelDetail[1].id) {
+                                imovelDetail[0].isFavorite = true;
+                                return;
+                            }
+                            else {
+                                imovelDetail[0].isFavorite = false;
+                            }
+                        });
+                        const results = { "success": true, "data": imovelDetail };
+                        resolve(true);
+                        promises.push(promiseUsuario);
+                        res.status(200).json(results);
+                    }
+                });
             });
-        });
-    }
+        }
         Promise.all(promises);
     }
     else {
@@ -164,19 +164,25 @@ imovelController.favoriteImovel = (req, res) => {
     modelUser.findById({ '_id': idUsuario }, function (err, usuario) {
         //Verifica se o ID do imóvel a ser favoritado existe no sub-documento do usuário solicitante
         var fav = usuario.imoveisFavorites.id(idImovel)
+        var favoritado;
         if (fav) {
-            // Remove caso exista
+            // Remove caso exista            
             fav.remove();
+            favoritado = false;
         } else {
             //Caso não exista, inclua.
             usuario.imoveisFavorites.push({ _id: idImovel });
+            favoritado = true;
         }
         //Salvo o documento com seus sub-documentos atualizados.
         usuario.save(function (err) {
             if (err)
-                res.send("Erro ao favoritar o imóvel: " + err);
+                res.status(500).send("Erro ao favoritar o imóvel: " + err);
 
-            res.status(200).json({ message: "Imóvel favoritado com sucesso." });
+            if (favoritado == true)
+                res.status(200).json({ message: "Imóvel favoritado com sucesso.", favoritado });
+            else
+                res.status(200).json({ message: "Imóvel desfavoritado com sucesso.", favoritado });
         });
     });
 }
