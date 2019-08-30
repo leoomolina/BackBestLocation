@@ -236,6 +236,28 @@ imovelController.updateImovel = (req, res) => {
         }
         else {
             if (req.params.idUsuario) {
+
+                // Formatação dados de string para Number
+                if (req.body.valorImovel) {
+                    req.body.valorImovel = req.body.valorImovel.replace(',', '.');
+                    req.body.valorImovel = Number(req.body.valorImovel);
+        }
+
+                if (req.body.valorCondominio) {
+                    req.body.valorCondominio = req.body.valorCondominio.replace(',', '.');
+                    req.body.valorCondominio = Number(req.body.valorCondominio);
+                }
+
+                if (req.body.valorIptu) {
+                    req.body.valorIptu = req.body.valorIptu.replace(',', '.');
+                    req.body.valorIptu = Number(req.body.valorIptu);
+                }
+
+                if (req.body.valorImovel) {
+                    req.body.area = req.body.area.replace(',', '.');
+                    req.body.area = Number(req.body.area);
+                }
+
                 imovel.titulo = req.body.titulo;
                 imovel.tipoImovel = req.body.tipoImovel;
                 imovel.status = req.body.status;
@@ -296,6 +318,27 @@ imovelController.updateImovel = (req, res) => {
 
 imovelController.newImovel = (req, res) => {
     if (req.params.idUsuario) {
+        // Formatação dados de string para Number
+        if (req.body.valorImovel != null) {
+            req.body.valorImovel = req.body.valorImovel.replace(',', '.');
+            req.body.valorImovel = Number(req.body.valorImovel);
+        }
+
+        if (req.body.valorCondominio != null) {
+            req.body.valorCondominio = req.body.valorCondominio.replace(',', '.');
+            req.body.valorCondominio = Number(req.body.valorCondominio);
+        }
+
+        if (req.body.valorIptu != null) {
+            req.body.valorIptu = req.body.valorIptu.replace(',', '.');
+            req.body.valorIptu = Number(req.body.valorIptu);
+        }
+
+        if (req.body.valorImovel != null) {
+            req.body.area = req.body.area.replace(',', '.');
+            req.body.area = Number(req.body.area);
+        }
+
         let newImovel = new modelImovel({
             titulo: req.body.titulo,
             tipoImovel: req.body.tipoImovel,
