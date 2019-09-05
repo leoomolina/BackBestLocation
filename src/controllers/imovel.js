@@ -1,5 +1,8 @@
 // importação módulo mongoose
 const mongoose = require('mongoose');
+const azure = require('azure-storage');
+const guid = require('guid');
+const containerConnectionString = 'DefaultEndpointsProtocol=https;AccountName=bestlocationstr;AccountKey=JuW7KqK+9Mz+ukugr4byxCziocb927TpJ9lAls78XAnOjQuMLr2EtMtMkr7Q4TQwMu4CC9iLOQ2AjimDmUQEag==;EndpointSuffix=core.windows.net';
 
 // atribuição do model registrado à variável modelImovel
 const modelImovel = mongoose.model('Imovel');
@@ -236,12 +239,13 @@ imovelController.updateImovel = (req, res) => {
         }
         else {
             if (req.params.idUsuario) {
+                imovel.images = [];
 
                 // Formatação dados de string para Number
                 if (req.body.valorImovel) {
                     req.body.valorImovel = req.body.valorImovel.replace(',', '.');
                     req.body.valorImovel = Number(req.body.valorImovel);
-        }
+                }
 
                 if (req.body.valorCondominio) {
                     req.body.valorCondominio = req.body.valorCondominio.replace(',', '.');
@@ -287,6 +291,9 @@ imovelController.updateImovel = (req, res) => {
                 imovel.quartoServico = req.body.quartoServico;
                 imovel.emCondominio = req.body.emCondominio;
 
+                if (req.body.images == null || req.body.images == undefined)
+                    req.body.images = [];
+
                 if (imovel.emCondominio == true) {
                     imovel.detalhesCondominio.fechado = req.body.detalhesCondominio.fechado;
                     imovel.detalhesCondominio.seg24hrs = req.body.detalhesCondominio.seg24hrs;
@@ -296,6 +303,29 @@ imovelController.updateImovel = (req, res) => {
                     imovel.detalhesCondominio.portaoEletrico = req.body.detalhesCondominio.portaoEletrico;
                 }
 
+                if (req.body.images.length > 0) {
+                    // Criar blob service
+
+                    const blobSvc = azure.createBlobService(containerConnectionString);
+
+                    let rawData = req.body.images;
+                    rawData.forEach(element => {
+                        let filename = 'user' + req.params.idUsuario + guid.raw().toString() + '.jpg';
+                        let matches = element.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                        let type = matches[1];
+                        let buffer = new Buffer(matches[2], 'base64');
+                        let img = 'https://bestlocationstr.blob.core.windows.net/imovel-images/' + filename;
+                        imovel.images.push(img);
+
+                        // Salvar a imagem
+                        blobSvc.createBlockBlobFromText('imovel-images', filename, buffer, {
+                            contentType: type
+                        }, function (error, result, response) {
+                            if (error)
+                                filename = 'default-product.png'
+                        });
+                    });
+                }
                 imovel.save(function (error) {
                     if (error)
                         res.send("Erro ao atualizar o imóvel: " + error);
@@ -388,6 +418,29 @@ imovelController.newImovel = (req, res) => {
         }
 
         newImovel.usuarioId = { _id: req.params.idUsuario };
+
+        if (req.body.images.length > 0) {
+            // Criar blob service
+            const blobSvc = azure.createBlobService(containerConnectionString);
+
+            let rawData = req.body.images;
+            rawData.forEach(element => {
+                let filename = guid.raw().toString() + '.jpg';
+                let matches = element.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                let type = matches[1];
+                let buffer = new Buffer(matches[2], 'base64');
+                let img = 'https://bestlocationstr.blob.core.windows.net/imovel-images/' + filename;
+                newImovel.images.push(img);
+
+                // Salvar a imagem
+                blobSvc.createBlockBlobFromText('imovel-images', filename, buffer, {
+                    contentType: type
+                }, function (error, result, response) {
+                    if (error)
+                        filename = 'default-product.png'
+                });
+            });
+        }
 
         newImovel.save()
             .then(() => res.json({

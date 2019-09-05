@@ -117,6 +117,10 @@ const imovelSchema = new Schema({
         type: Boolean,
         default: false
     },
+    images: [{
+        type: String,
+        trim: true
+    }],
     detalhesCondominio: [{
         valorCondominio: {
             type: Number,
