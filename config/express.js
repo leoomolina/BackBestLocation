@@ -4,8 +4,8 @@ const consign = require('consign');
 var bodyParser = require('body-parser');
 const session = require('express-session');
 
-  var app = express();
-  //require('dotenv').config()
+var app = express();
+//require('dotenv').config()
 
 app.use(function (req, res, next) {
 
@@ -47,10 +47,8 @@ module.exports = () => {
   app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
   app.use(express.static('public')); //definir a localização dos arquivos estáticos /public
 
-  bodyParser = {
-    json: {limit: '5000mb', extended: true},
-    urlencoded: {limit: '5000mb', extended: true}
-  };
+  app.use(bodyParser.json({ limit: '10mb', extended: true }))
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
   // injeção e autoload dos nossos scripts na nossa intância
   consign({ cwd: 'server' })

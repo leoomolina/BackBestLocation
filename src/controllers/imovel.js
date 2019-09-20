@@ -427,6 +427,7 @@ imovelController.newImovel = (req, res) => {
             const blobSvc = azure.createBlobService(containerConnectionString);
 
             let rawData = req.body.images;
+            console.log(req.body.limit)
             rawData.forEach(element => {
                 let filename = guid.raw().toString() + '.jpg';
                 let matches = element.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
