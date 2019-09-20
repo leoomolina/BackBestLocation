@@ -361,7 +361,7 @@ imovelController.newImovel = (req, res) => {
     if (req.params.idUsuario) {
         // Formatação dados de string para Number
         if (req.body.valorImovel != null) {
-            req.body.valorImovel = req.body.valorImovel.replace('.','');
+            req.body.valorImovel = req.body.valorImovel.replace(/\./g,'');
             req.body.valorImovel = req.body.valorImovel.replace(',', '.');
             req.body.valorImovel = Number(req.body.valorImovel);
         }
