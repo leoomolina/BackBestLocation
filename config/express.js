@@ -48,8 +48,8 @@ module.exports = () => {
   app.use(express.static('public')); //definir a localização dos arquivos estáticos /public
 
   bodyParser = {
-    json: {limit: '50mb', extended: true},
-    urlencoded: {limit: '50mb', extended: true}
+    json: {limit: '5000mb', extended: true},
+    urlencoded: {limit: '5000mb', extended: true}
   };
 
   // injeção e autoload dos nossos scripts na nossa intância
