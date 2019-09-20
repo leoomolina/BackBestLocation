@@ -223,6 +223,17 @@ imovelController.deleteImovelAdmin = (req, res) => {
     });
 }
 
+imovelController.deleteAllImoveisAdmin = (req, res) => {
+    modelImovel.remove({}, (err) => {
+        if(err) return res.status(500).send(err);
+
+        const response = {
+            message: "Imóveis removidos com sucesso"
+        };
+        return res.status(200).send(response);
+    });
+}
+
 imovelController.updateImovel = (req, res) => {
     const id = req.params.idImovel;
 

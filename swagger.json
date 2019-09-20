@@ -621,13 +621,16 @@
           "example": "0ab12cd3e456789012fg3h45"
         },
         "titulo": {
-          "type": "String"
+          "type": "String",
+          "example":"Descricao Título"
         },
         "tipoImovel": {
-          "type": "String"
+          "type": "String",
+          "example":"Casa"
         },
         "status": {
-          "type": "String"
+          "type": "String",
+          "example":"Venda"
         },
         "numQuartos": {
           "type": "integer",
@@ -642,7 +645,8 @@
           "default": 0
         },
         "descricao": {
-          "type": "String"
+          "type": "String",
+          "example": "Casa ao lado do shopping"
         },
         "valorImovel": {
           "type": "integer",
@@ -657,71 +661,89 @@
           "default": 0.00
         },
         "cep": {
-          "type": "String"
+          "type": "String",
+          "example":"17123-45"
         },
         "endereco": {
-          "type": "String"
+          "type": "String",
+          "example":"Rua Teste"
         },
         "numEndereco": {
-          "type": "String"
+          "type": "String",
+          "example": "123A"
         },
         "complementoEndereco": {
-          "type": "String"
+          "type": "String",
+          "example": "Bloco 1"
         },
         "bairro": {
-          "type": "String"
+          "type": "String",
+          "example": "Parque dos Testes"
         },
         "cidade": {
-          "type": "String"
+          "type": "String",
+          "example": "Testolândia"
         },
         "uf": {
-          "type": "String"
+          "type": "String",
+          "example": "SP"
         },
         "areaServico": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "arCondicionado": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "churrasqueira": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "piscina": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "varanda": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "mobiliado": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "armariosCozinha": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "armariosQuarto": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "quartoServico": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "emCondominio": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "images": [
           {
             "properties": {
               "type": "String",
-              "trim": true
+              "trim": true,
+              "example": ""
             }
           }
         ],
@@ -733,39 +755,48 @@
             },
             "fechado": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             },
             "seg24hrs": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             },
             "podeAnimal": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             },
             "piscina": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             },
             "academia": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             },
             "portaoEletrico": {
               "type": "Boolean",
-              "default": false
+              "default": false,
+              "example": false
             }
           }
         },
         "usuarioId": {
           "type": "ObjectId",
-          "ref": "User"
+          "ref": "User",
+          "example": "0ab12cd3e456789012fg3h45"
         },
         "createdAt": {
-          "type": "Date"
+          "type": "Date",
+          "example": "0000-00-00T00:00:0.000Z"
         },
         "updatedAt": {
-          "type": "Date"
+          "type": "Date",
+          "example": "0000-00-00T00:00:0.000Z"
         }
       }
     },
@@ -780,15 +811,18 @@
       ],
       "properties": {
         "_id": {
-          "type": "ObjectId"
+          "type": "ObjectId",
+          "example": "0ab12cd3e456789012fg3h45"
         },
         "firstName": {
           "type": "String",
-          "trim": true
+          "trim": true,
+          "example":"Asdrubal"
         },
         "lastName": {
           "type": "String",
-          "trim": true
+          "trim": true,
+          "example":"da Silva"
         },
         "cpf": {
           "type": "String",
@@ -797,52 +831,64 @@
         },
         "tipo": {
           "type": "String",
-          "trim": true
+          "trim": true,
+          "example":"comprador"
         },
         "dtNascimento": {
           "type": "Date",
-          "trim": true
+          "trim": true,
+          "example":"0000-00-00T00:00:0.000Z"
         },
         "sexo": {
           "type": "String",
-          "trim": true
+          "trim": true,
+          "example":"masculino"
         },
         "telefone": {
           "type": "String",
-          "trim": true
+          "trim": true,
+          "example":"11 1234-5678"
         },
         "email": {
           "type": "String",
           "trim": true,
           "unique": true,
-          "lowercase": true
+          "lowercase": true,
+          "example":"asdrubal@dominio.com"
         },
         "password": {
-          "type": "String"
+          "type": "String",
+          "example":"abcdef"
         },
         "isAdmin": {
           "type": "Boolean",
-          "default": false
+          "default": false,
+          "example": false
         },
         "imoveisFavorites": {
           "properties": {
             "userId": {
               "type": "ObjectId",
-              "ref": "Imovel"
+              "ref": "Imovel",
+              "example": "0ab12cd3e456789012fg3h45"
             }
           }
         },
         "passResetKey": {
-          "type": "String"
+          "type": "String",
+          "example":"abcdef"
         },
         "passKeyExpires": {
-          "type": "integer"
+          "type": "integer",
+          "example": ""
         },
         "createdAt": {
-          "type": "Date"
+          "type": "Date",
+          "example": "0000-00-00T00:00:0.000Z"
         },
         "updateAt": {
-          "type": "integer"
+          "type": "Date",
+          "example": "0000-00-00T00:00:0.000Z"
         }
       }
     },
