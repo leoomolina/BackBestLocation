@@ -419,6 +419,9 @@ imovelController.newImovel = (req, res) => {
 
         newImovel.usuarioId = { _id: req.params.idUsuario };
 
+        if (req.body.images == null || req.body.images == undefined)
+                    req.body.images = [];
+
         if (req.body.images.length > 0) {
             // Criar blob service
             const blobSvc = azure.createBlobService(containerConnectionString);
@@ -448,7 +451,7 @@ imovelController.newImovel = (req, res) => {
                 message: 'Imóvel inserido com sucesso',
                 statusCode: 200
             }))
-            .catch(err => res.json({
+            .catch(err => res.status(500).json({
                 success: false,
                 message: err,
                 statusCode: 500
