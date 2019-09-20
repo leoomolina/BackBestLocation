@@ -47,6 +47,9 @@ module.exports = () => {
   app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
   app.use(express.static('public')); //definir a localização dos arquivos estáticos /public
 
+  app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+
   // injeção e autoload dos nossos scripts na nossa intância
   consign({ cwd: 'server' })
     .include('../src/models')
