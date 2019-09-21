@@ -42,6 +42,9 @@ module.exports = () => {
 
   app.set('port', (process.env.PORT || 8081));
 
+  app.use(bodyParser.json({ limit: '10mb', extended: true }))
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
+
   app.use(bodyParser.urlencoded({ extended: true }));    // parse application/x-www-form-urlencoded
   app.use(bodyParser.json());     // parse application/json
   app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
