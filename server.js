@@ -4,9 +4,13 @@ const app = require('./config/express')();
 var path = require('path');
 var serveStatic = require('serve-static');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
 require('./config/database');
 
 app.use(serveStatic(__dirname));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 require('dotenv').config();
 

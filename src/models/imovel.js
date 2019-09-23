@@ -8,8 +8,7 @@ const Schema = mongoose.Schema;
 const imovelSchema = new Schema({
     titulo: {
         type: String,
-        required: true,
-        default: ''
+        required: true
     },
     tipoImovel: {
         type: String,
@@ -21,7 +20,7 @@ const imovelSchema = new Schema({
     },
     numQuartos: {
         type: Number,
-        default: ''
+        default: 0
     },
     numVagasGaragem: {
         type: Number,
@@ -117,6 +116,10 @@ const imovelSchema = new Schema({
         type: Boolean,
         default: false
     },
+    images: [{
+        type: String,
+        trim: true
+    }],
     detalhesCondominio: [{
         valorCondominio: {
             type: Number,
