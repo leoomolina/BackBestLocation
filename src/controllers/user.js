@@ -170,20 +170,26 @@ userController.loginUser = (req, res) => {
     if (!emailLogar) {
         res.status(400).json({
             success: false,
-            message: 'Usuário é obrigatório.',
-            statusCode: 400
+            message: 'Usuário é obrigatório.'
         });
         return;
     } else if (!passwordLogar) {
         res.status(400).json({
             success: false,
-            message: 'Senha é obrigatório.',
-            statusCode: 400
+            message: 'Senha é obrigatório.'
         });
         return;
     }
     modelUser.findOne({ email: emailLogar }, 'email password isAdmin', (err, userData) => {
         if (!err) {
+            if (userData == null) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Credenciais de login inválidas.'
+                });
+                return;
+            }
+
             let passwordCheck = bcrypt.compareSync(passwordLogar, userData.password);
             if (passwordCheck) { // usando o bcrypt para verificar o hash da senha do banco de dados em relação à senha fornecida pelo usuário
                 req.session.user = {
@@ -199,13 +205,15 @@ userController.loginUser = (req, res) => {
             } else {
                 res.status(400).json({
                     success: false,
-                    message: 'Senha incorreta',
-                    statusCode: 400
+                    message: 'Credenciais de login inválidas.'
                 });
                 return;
             }
         } else {
-            res.status(401).send('Credenciais de login inválidas.')
+            res.status(400).json({
+                success: false,
+                message: 'Credenciais de login inválidas.'
+            })
             return;
         }
     });
