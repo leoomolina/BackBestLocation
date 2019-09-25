@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 // atribuição do model registrado à variável modelUser
 const modelUser = mongoose.model('User');
+const modelImovel = mongoose.model('Imovel');
 
 // inicializando objeto userController
 let userController = {};
@@ -111,16 +112,42 @@ userController.detailsUser = (req, res) => {
 
 // DELETE
 userController.deleteUser = (req, res) => {
-    modelUser.findByIdAndRemove(req.params.user_id, (err, user) => {
-        if (err)
-            return res.status(500).json({ message: "Erro ao encontrar o usuário: ID incorreto" });
+    const idUsuario = req.params.user_id;
 
-        const response = {
-            message: "Usuário removido com sucesso",
-            id: user.id
-        };
-        return res.status(200).send(response);
-    });
+    var promises = [];
+
+    var imoveisUsuario = new Promise(function (resolve, reject) {
+        modelImovel.deleteMany({ usuarioId: idUsuario }, (err, imoveis) => {
+            if (err) {
+                reject(true);
+                return res.status(400).send(err);
+            } else {
+                Promise.all(promises);
+                resolve(true);
+                return console.log("Imóveis do usuário removidos com sucesso!");
+            }
+        })
+    })
+
+    promises.push(imoveisUsuario);
+
+    var usuario = new Promise(function (resolve, reject) {
+        modelUser.findByIdAndRemove(idUsuario, (err, user) => {
+            if (err) {
+                reject(true);
+                return res.status(500).json({ message: "Erro ao encontrar o usuário: ID incorreto" });
+            }
+
+            const response = {
+                message: "Usuário removido com sucesso"
+            };
+            resolve(true);
+            promises.push(usuario);
+            res.status(200).json(response);
+        });
+    })
+
+    Promise.all(promises);
 }
 
 // UPDATE
