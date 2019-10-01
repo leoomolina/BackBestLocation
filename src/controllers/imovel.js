@@ -471,7 +471,7 @@ imovelController.newImovel = (req, res) => {
             }));
     }
     else {
-        res.json({
+        res.status(400).json({
             success: false,
             message: "Usuário sem permissão para cadastrar imóvel.",
             statusCode: 400

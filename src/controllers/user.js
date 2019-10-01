@@ -66,16 +66,16 @@ userController.newUser = (req, res) => {
                                     .then(() => res.json({
                                         success: true,
                                         message: 'Usuário criado com sucesso',
-                                        statusCode: 201
+                                        statusCode: 200
                                     }))
-                                    .catch(err => res.json({
+                                    .catch(err => res.status(500).json({
                                         success: false,
                                         message: err,
                                         statusCode: 500
                                     }));
                             })
 
-                            .catch(err => res.json({
+                            .catch(err => res.status(500).json({
                                 success: false,
                                 message: err,
                                 statusCode: 500
@@ -85,7 +85,7 @@ userController.newUser = (req, res) => {
 
         } else {
 
-            res.json({
+            res.status(400).json({
                 success: false,
                 message: 'Senhas não correspondem',
                 statusCode: 400
@@ -94,7 +94,7 @@ userController.newUser = (req, res) => {
 
     } else {
 
-        res.json({
+        res.status(400).json({
             success: false,
             message: 'CPF, email e senha são obrigatórios',
             statusCode: 400
