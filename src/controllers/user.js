@@ -14,8 +14,12 @@ let userController = {};
 userController.allUsers = (req, res) => {
 
     modelUser.find()
-        .then(results => res.json(results))
-        .catch(err => res.send(err));
+        .then(results => res.status(200).json(results))
+        .catch(err => res.status(500).json({
+            success: false,
+            message: err,
+            statusCode: 500
+        }));
 }
 
 // POST
@@ -33,7 +37,7 @@ userController.newUser = (req, res) => {
                 .then(user => {
 
                     if (user) {
-                        res.json({
+                        return res.status(400).json({
                             success: false,
                             statusCode: 400,
                             message: 'CPF ou email indisponível'
@@ -63,7 +67,7 @@ userController.newUser = (req, res) => {
 
                                 //método save mongoose: promise
                                 newUser.save()
-                                    .then(() => res.json({
+                                    .then(() => res.status(200).json({
                                         success: true,
                                         message: 'Usuário criado com sucesso',
                                         statusCode: 200
@@ -84,8 +88,7 @@ userController.newUser = (req, res) => {
                 })
 
         } else {
-
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: 'Senhas não correspondem',
                 statusCode: 400
@@ -93,8 +96,7 @@ userController.newUser = (req, res) => {
         }
 
     } else {
-
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: 'CPF, email e senha são obrigatórios',
             statusCode: 400
@@ -106,7 +108,7 @@ userController.newUser = (req, res) => {
 userController.detailsUser = (req, res) => {
     const id = req.params.user_id;
     modelUser.findById(id)
-        .then(result => res.json(result))
+        .then(result => res.status(200).json(result))
         .catch(err => res.send(err));
 }
 

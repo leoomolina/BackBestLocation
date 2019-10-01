@@ -40,7 +40,7 @@ imovelController.getImoveis = (req, res) => {
             var promiseUsuario = new Promise(function (resolve, reject) {
                 modelUser.findById(idUsuario, function (err, usuario) {
                     if (err || !usuario) {
-                        res.status(400).send('Erro: ' + err);
+                        return res.status(500).send('Erro: ' + err);
                     } else {
                         if (imovelDetail.length < 2)
                             res.status(400).send('Erro: imóvel não encontrado');
@@ -77,12 +77,12 @@ imovelController.getImoveis = (req, res) => {
         // Soma de Imóveis retornados
         modelImovel.countDocuments({}, function (err, totalCount) {
             if (err) {
-                results = { "success": false, "message": "Error fetching data" };
+                return res.status(500).send('Erro: ' + err);
             }
 
             modelImovel.find({}, {}, query, function (err, data) {
                 if (err) {
-                    results = { "success": false, "message": "Error fetching data" };
+                    return res.status(500).send('Erro: ' + err);
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
                     results = { "success": true, data, "pages": totalPages };
@@ -113,12 +113,12 @@ imovelController.getImoveisUsuario = (req, res) => {
         // Soma de Imóveis retornados
         modelImovel.countDocuments({}, function (err, totalCount) {
             if (err) {
-                results = { "success": false, "message": "Error fetching data" };
+                return res.status(500).send('Erro: ' + err);
             }
 
             modelImovel.find({ usuarioId: idUsuario }, {}, query, function (err, data) {
                 if (err) {
-                    results = { "success": false, "message": "Error fetching data" };
+                    return res.status(500).send('Erro: ' + err);
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
                     results = { "success": true, data, "pages": totalPages };
@@ -128,7 +128,7 @@ imovelController.getImoveisUsuario = (req, res) => {
         })
     }
     else {
-        res.json({
+        res.status(500).json({
             success: false,
             message: "Usuário inválido.",
             statusCode: 500
@@ -152,7 +152,7 @@ imovelController.getImoveisFavorito = (req, res) => {
         });
     }
     else {
-        res.json({
+        return res.status(500).json({
             success: false,
             message: "Usuário não encontrado.",
             statusCode: 500
@@ -180,7 +180,7 @@ imovelController.favoriteImovel = (req, res) => {
         //Salvo o documento com seus sub-documentos atualizados.
         usuario.save(function (err) {
             if (err)
-                res.status(500).send("Erro ao favoritar o imóvel: " + err);
+                return res.status(500).send("Erro ao favoritar o imóvel: " + err);
 
             if (favoritado == true)
                 res.status(200).json({ message: "Imóvel favoritado com sucesso.", favoritado });
@@ -203,7 +203,7 @@ imovelController.deleteImovel = (req, res) => {
         });
     }
     else {
-        res.json({
+        res.status(400).json({
             success: false,
             message: "Usuário sem permissão para atualizar imóvel.",
             statusCode: 400
@@ -339,7 +339,7 @@ imovelController.updateImovel = (req, res) => {
                 }
                 imovel.save(function (error) {
                     if (error)
-                        res.send("Erro ao atualizar o imóvel: " + error);
+                        res.status(500).send("Erro ao atualizar o imóvel: " + error);
 
                     res.status(200).json({
                         message: "Imóvel atualizado com sucesso"
@@ -347,7 +347,7 @@ imovelController.updateImovel = (req, res) => {
                 });
             }
             else {
-                res.json({
+                res.status(400).json({
                     success: false,
                     message: "Usuário sem permissão para atualizar imóvel.",
                     statusCode: 400
@@ -439,7 +439,6 @@ imovelController.newImovel = (req, res) => {
             const blobSvc = azure.createBlobService(containerConnectionString);
 
             let rawData = req.body.images;
-            console.log(req.body.limit)
             rawData.forEach(element => {
                 let filename = guid.raw().toString() + '.jpg';
                 let matches = element.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
