@@ -116,6 +116,11 @@ const imovelSchema = new Schema({
         type: Boolean,
         default: false
     },
+    tags: [{
+        type: String,
+        trim: true,
+        upperCase: true
+        }],
     images: [{
         type: String,
         trim: true

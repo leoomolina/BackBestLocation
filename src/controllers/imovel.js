@@ -40,7 +40,7 @@ imovelController.getImoveis = (req, res) => {
             var promiseUsuario = new Promise(function (resolve, reject) {
                 modelUser.findById(idUsuario, function (err, usuario) {
                     if (err || !usuario) {
-                        res.status(400).send('Erro: ' + err);
+                        return res.status(500).send('Erro: ' + err);
                     } else {
                         if (imovelDetail.length < 2)
                             res.status(400).send('Erro: imóvel não encontrado');
@@ -77,12 +77,12 @@ imovelController.getImoveis = (req, res) => {
         // Soma de Imóveis retornados
         modelImovel.countDocuments({}, function (err, totalCount) {
             if (err) {
-                results = { "success": false, "message": "Error fetching data" };
+                return res.status(500).send('Erro: ' + err);
             }
 
             modelImovel.find({}, {}, query, function (err, data) {
                 if (err) {
-                    results = { "success": false, "message": "Error fetching data" };
+                    return res.status(500).send('Erro: ' + err);
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
                     results = { "success": true, data, "pages": totalPages };
@@ -113,12 +113,12 @@ imovelController.getImoveisUsuario = (req, res) => {
         // Soma de Imóveis retornados
         modelImovel.countDocuments({}, function (err, totalCount) {
             if (err) {
-                results = { "success": false, "message": "Error fetching data" };
+                return res.status(500).send('Erro: ' + err);
             }
 
             modelImovel.find({ usuarioId: idUsuario }, {}, query, function (err, data) {
                 if (err) {
-                    results = { "success": false, "message": "Error fetching data" };
+                    return res.status(500).send('Erro: ' + err);
                 } else {
                     var totalPages = Math.ceil(totalCount / size)
                     results = { "success": true, data, "pages": totalPages };
@@ -128,7 +128,7 @@ imovelController.getImoveisUsuario = (req, res) => {
         })
     }
     else {
-        res.json({
+        res.status(500).json({
             success: false,
             message: "Usuário inválido.",
             statusCode: 500
@@ -152,7 +152,7 @@ imovelController.getImoveisFavorito = (req, res) => {
         });
     }
     else {
-        res.json({
+        return res.status(500).json({
             success: false,
             message: "Usuário não encontrado.",
             statusCode: 500
@@ -180,7 +180,7 @@ imovelController.favoriteImovel = (req, res) => {
         //Salvo o documento com seus sub-documentos atualizados.
         usuario.save(function (err) {
             if (err)
-                res.status(500).send("Erro ao favoritar o imóvel: " + err);
+                return res.status(500).send("Erro ao favoritar o imóvel: " + err);
 
             if (favoritado == true)
                 res.status(200).json({ message: "Imóvel favoritado com sucesso.", favoritado });
@@ -203,7 +203,7 @@ imovelController.deleteImovel = (req, res) => {
         });
     }
     else {
-        res.json({
+        res.status(400).json({
             success: false,
             message: "Usuário sem permissão para atualizar imóvel.",
             statusCode: 400
@@ -225,7 +225,7 @@ imovelController.deleteImovelAdmin = (req, res) => {
 
 imovelController.deleteAllImoveisAdmin = (req, res) => {
     modelImovel.remove({}, (err) => {
-        if(err) return res.status(500).send(err);
+        if (err) return res.status(500).send(err);
 
         const response = {
             message: "Imóveis removidos com sucesso"
@@ -314,6 +314,18 @@ imovelController.updateImovel = (req, res) => {
                     imovel.detalhesCondominio.portaoEletrico = req.body.detalhesCondominio.portaoEletrico;
                 }
 
+                imovel.tags = [];
+                imovel.tags.push(imovel.titulo);
+                imovel.tags.push(imovel.tipoImovel);
+                imovel.tags.push(imovel.status);
+                imovel.tags.push(imovel.cidade);
+                imovel.tags.push(imovel.bairro);
+
+                for (let i = 0; i < imovel.tags.length; i++) {
+                    imovel.tags[i] = imovel.tags[i].normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+                }
+
                 if (req.body.images.length > 0) {
                     // Criar blob service
 
@@ -339,7 +351,7 @@ imovelController.updateImovel = (req, res) => {
                 }
                 imovel.save(function (error) {
                     if (error)
-                        res.send("Erro ao atualizar o imóvel: " + error);
+                        res.status(500).send("Erro ao atualizar o imóvel: " + error);
 
                     res.status(200).json({
                         message: "Imóvel atualizado com sucesso"
@@ -347,7 +359,7 @@ imovelController.updateImovel = (req, res) => {
                 });
             }
             else {
-                res.json({
+                res.status(400).json({
                     success: false,
                     message: "Usuário sem permissão para atualizar imóvel.",
                     statusCode: 400
@@ -361,7 +373,7 @@ imovelController.newImovel = (req, res) => {
     if (req.params.idUsuario) {
         // Formatação dados de string para Number
         if (req.body.valorImovel != null) {
-            req.body.valorImovel = req.body.valorImovel.replace(/\./g,'');
+            req.body.valorImovel = req.body.valorImovel.replace(/\./g, '');
             req.body.valorImovel = req.body.valorImovel.replace(',', '.');
             req.body.valorImovel = Number(req.body.valorImovel);
         }
@@ -376,7 +388,7 @@ imovelController.newImovel = (req, res) => {
             req.body.valorIptu = Number(req.body.valorIptu);
         }
 
-        if (req.body.valorImovel != null) {
+        if (req.body.area != null) {
             req.body.area = req.body.area.replace(',', '.');
             req.body.area = Number(req.body.area);
         }
@@ -420,6 +432,17 @@ imovelController.newImovel = (req, res) => {
             },
         });
 
+        newImovel.tags.push(newImovel.titulo);
+        newImovel.tags.push(newImovel.tipoImovel);
+        newImovel.tags.push(newImovel.status);
+        newImovel.tags.push(newImovel.cidade);
+        newImovel.tags.push(newImovel.bairro);
+
+        for (let i = 0; i < newImovel.tags.length; i++) {
+            newImovel.tags[i] = newImovel.tags[i].normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        }
+
         if (newImovel.emCondominio == true) {
             newImovel.detalhesCondominio.fechado = req.body.detalhesCondominio.fechado;
             newImovel.detalhesCondominio.seg24hrs = req.body.detalhesCondominio.seg24hrs;
@@ -432,14 +455,13 @@ imovelController.newImovel = (req, res) => {
         newImovel.usuarioId = { _id: req.params.idUsuario };
 
         if (req.body.images == null || req.body.images == undefined)
-                    req.body.images = [];
+            req.body.images = [];
 
         if (req.body.images.length > 0) {
             // Criar blob service
             const blobSvc = azure.createBlobService(containerConnectionString);
 
             let rawData = req.body.images;
-            console.log(req.body.limit)
             rawData.forEach(element => {
                 let filename = guid.raw().toString() + '.jpg';
                 let matches = element.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
@@ -471,7 +493,7 @@ imovelController.newImovel = (req, res) => {
             }));
     }
     else {
-        res.json({
+        res.status(400).json({
             success: false,
             message: "Usuário sem permissão para cadastrar imóvel.",
             statusCode: 400
@@ -481,7 +503,9 @@ imovelController.newImovel = (req, res) => {
 
 imovelController.searchImovel = (req, res, next) => {
     var searchParams = req.query.query;
-    modelImovel.find({ cidade: { $regex: '.*' + searchParams + '.*' } }, function (e, docs) {
+    searchParams = searchParams.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    modelImovel.find({ tags: { $regex: '.*' + searchParams + '.*' } }, function (e, docs) {
         res.json({
             results: true,
             search: req.query.query,
