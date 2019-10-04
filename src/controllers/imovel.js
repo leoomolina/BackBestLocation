@@ -225,7 +225,7 @@ imovelController.deleteImovelAdmin = (req, res) => {
 
 imovelController.deleteAllImoveisAdmin = (req, res) => {
     modelImovel.remove({}, (err) => {
-        if(err) return res.status(500).send(err);
+        if (err) return res.status(500).send(err);
 
         const response = {
             message: "Imóveis removidos com sucesso"
@@ -314,6 +314,18 @@ imovelController.updateImovel = (req, res) => {
                     imovel.detalhesCondominio.portaoEletrico = req.body.detalhesCondominio.portaoEletrico;
                 }
 
+                imovel.tags = [];
+                imovel.tags.push(imovel.titulo);
+                imovel.tags.push(imovel.tipoImovel);
+                imovel.tags.push(imovel.status);
+                imovel.tags.push(imovel.cidade);
+                imovel.tags.push(imovel.bairro);
+
+                for (let i = 0; i < imovel.tags.length; i++) {
+                    imovel.tags[i] = imovel.tags[i].normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+                }
+
                 if (req.body.images.length > 0) {
                     // Criar blob service
 
@@ -361,7 +373,7 @@ imovelController.newImovel = (req, res) => {
     if (req.params.idUsuario) {
         // Formatação dados de string para Number
         if (req.body.valorImovel != null) {
-            req.body.valorImovel = req.body.valorImovel.replace(/\./g,'');
+            req.body.valorImovel = req.body.valorImovel.replace(/\./g, '');
             req.body.valorImovel = req.body.valorImovel.replace(',', '.');
             req.body.valorImovel = Number(req.body.valorImovel);
         }
@@ -376,7 +388,7 @@ imovelController.newImovel = (req, res) => {
             req.body.valorIptu = Number(req.body.valorIptu);
         }
 
-        if (req.body.valorImovel != null) {
+        if (req.body.area != null) {
             req.body.area = req.body.area.replace(',', '.');
             req.body.area = Number(req.body.area);
         }
@@ -420,6 +432,17 @@ imovelController.newImovel = (req, res) => {
             },
         });
 
+        newImovel.tags.push(newImovel.titulo);
+        newImovel.tags.push(newImovel.tipoImovel);
+        newImovel.tags.push(newImovel.status);
+        newImovel.tags.push(newImovel.cidade);
+        newImovel.tags.push(newImovel.bairro);
+
+        for (let i = 0; i < newImovel.tags.length; i++) {
+            newImovel.tags[i] = newImovel.tags[i].normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        }
+
         if (newImovel.emCondominio == true) {
             newImovel.detalhesCondominio.fechado = req.body.detalhesCondominio.fechado;
             newImovel.detalhesCondominio.seg24hrs = req.body.detalhesCondominio.seg24hrs;
@@ -432,7 +455,7 @@ imovelController.newImovel = (req, res) => {
         newImovel.usuarioId = { _id: req.params.idUsuario };
 
         if (req.body.images == null || req.body.images == undefined)
-                    req.body.images = [];
+            req.body.images = [];
 
         if (req.body.images.length > 0) {
             // Criar blob service
@@ -480,7 +503,9 @@ imovelController.newImovel = (req, res) => {
 
 imovelController.searchImovel = (req, res, next) => {
     var searchParams = req.query.query;
-    modelImovel.find({ cidade: { $regex: '.*' + searchParams + '.*' } }, function (e, docs) {
+    searchParams = searchParams.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    modelImovel.find({ tags: { $regex: '.*' + searchParams + '.*' } }, function (e, docs) {
         res.json({
             results: true,
             search: req.query.query,
