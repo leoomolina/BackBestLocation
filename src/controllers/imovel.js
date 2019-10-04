@@ -249,8 +249,11 @@ imovelController.updateImovel = (req, res) => {
             });
         }
         else {
-            if (req.params.idUsuario) {
+            if (imovel.usuarioId.equals(req.params.idUsuario)) {
                 imovel.images = [];
+
+                // Uma gambis ai rsrs
+                //imovel.images.push(req.body.foto);
 
                 // Formatação dados de string para Number
                 if (req.body.valorImovel) {
